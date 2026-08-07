@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flightcast</title>
+<style>
+:root{
+  --bg:#ffffff; --alt:#f5f5f7; --ink:#1d1d1f; --sec:#6e6e73; --line:#d2d2d7;
+  --blue:#0071e3; --series:#0071e3; --soft:#a8cbf0; --crit:#e0392b;
+  --card:#ffffff;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#000000; --alt:#101012; --ink:#f5f5f7; --sec:#a1a1a6; --line:#2a2a2c;
+  --blue:#2997ff; --series:#2997ff; --soft:#2a527e; --crit:#ff6157;
+  --card:#151517;
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.47;letter-spacing:-.01em}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+section{padding:100px 0}
+.alt{background:var(--alt)}
+.eyebrow{color:var(--sec);font-size:15px;font-weight:600;letter-spacing:.01em;margin-bottom:14px}
+h1{font-size:clamp(40px,7vw,72px);font-weight:700;line-height:1.05;letter-spacing:-.025em}
+h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
+.sub{font-size:clamp(19px,2.4vw,24px);color:var(--sec);font-weight:400;margin-top:20px;max-width:640px}
+.center{text-align:center}
+.center .sub{margin-left:auto;margin-right:auto}
+.hero{padding:130px 0 90px}
+.cta{display:inline-block;margin-top:34px;background:var(--blue);color:#fff;font-size:17px;font-weight:500;
+  padding:13px 26px;border-radius:980px;text-decoration:none;transition:opacity .2s}
+.cta:hover{opacity:.85}
+.link{color:var(--blue);text-decoration:none;font-size:17px;font-weight:500;margin-left:20px}
+.link:hover{text-decoration:underline}
+
+/* tool */
+.tool{background:var(--card);border-radius:28px;padding:40px;margin-top:40px;
+  border:1px solid var(--line)}
+@media(max-width:640px){.tool{padding:24px}}
+.seg{display:inline-flex;background:var(--alt);border-radius:980px;padding:4px;gap:2px;margin-bottom:30px}
+.seg button{border:0;background:transparent;color:var(--sec);padding:9px 20px;border-radius:980px;
+  font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+@media (prefers-color-scheme:dark){.seg button.on{background:#3a3a3c}}
+.seg.mini{margin-bottom:0;padding:3px}
+.seg.mini button{padding:6px 14px;font-size:13px}
+.fields{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:18px;align-items:end}
+@media(max-width:720px){.fields{grid-template-columns:1fr 1fr}}
+label{display:block;font-size:13px;color:var(--sec);font-weight:500;margin-bottom:8px}
+input[type=text],input[type=number]{width:100%;padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:var(--bg);color:var(--ink);font-size:16px;font-family:inherit;outline:none}
+input:focus{border-color:var(--blue)}
+.hint{font-size:13px;color:var(--sec);margin-top:16px}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:980px;padding:10px 18px;
+  font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .2s}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip small{display:block;font-size:11px;font-weight:400;opacity:.7;margin-top:1px}
+
+.lookup{border:0;background:var(--blue);color:#fff;border-radius:10px;padding:0 16px;
+  font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .2s}
+.lookup:hover{opacity:.85}
+.lookup:disabled{opacity:.5;cursor:default}
+
+/* results */
+.result-name{font-size:15px;color:var(--sec);font-weight:600;margin:34px 0 6px}
+.hero-num{font-size:clamp(56px,10vw,88px);font-weight:700;letter-spacing:-.03em;line-height:1}
+.hero-num small{font-size:.32em;font-weight:500;color:var(--sec);letter-spacing:0}
+.statline{display:flex;gap:36px;flex-wrap:wrap;margin:26px 0 8px}
+.statline .s .n{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.statline .s .l{font-size:13px;color:var(--sec)}
+.viewrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:26px 0 10px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--sec)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:11px;height:11px;border-radius:3px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.axlbl{fill:var(--sec);font-size:11px;font-variant-numeric:tabular-nums}
+.gl{stroke:var(--line);stroke-width:1;opacity:.6}
+.ptab{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:14px}
+.ptab div{text-align:center}
+.ptab .k{font-size:11px;color:var(--sec);font-weight:500}
+.ptab .v{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.tiny{font-size:13px;color:var(--sec);margin-top:12px}
+
+.prose p{font-size:19px;color:var(--sec);margin-bottom:22px;max-width:720px}
+.prose b{color:var(--ink);font-weight:600}
+.foot{padding:50px 0;border-top:1px solid var(--line);color:var(--sec);font-size:13px}
+.foot a{color:var(--sec)}
+</style>
+</head>
+<body>
+
+<section class="hero center">
+  <div class="wrap">
+    <div class="eyebrow">Flightcast</div>
+    <h1>How late will your<br>flight actually be?</h1>
+    <p class="sub">A single average hides everything that matters. Enter any flight in the world and see the full distribution of what to expect.</p>
+    <a class="cta" href="#tool">Model your flight</a>
+    <a class="link" href="#why">See why timing matters ›</a>
+  </div>
+</section>
+
+<section class="alt" id="tool">
+  <div class="wrap">
+    <h2>Model any flight</h2>
+    <p class="sub">Enter the numbers from any tracker, or start from a typical departure profile learned from real flights.</p>
+
+    <div class="tool">
+      <div class="seg" id="mode">
+        <button data-m="custom" class="on">Enter my flight</button>
+        <button data-m="preset">Start from a typical flight</button>
+      </div>
+
+      <div id="customBox">
+        <div class="fields">
+          <div><label>Flight number</label><div style="display:flex;gap:8px"><input type="text" id="fnum" placeholder="e.g. AZ610" value=""><button class="lookup" id="lookupBtn" style="display:none">Look up</button></div></div>
+          <div><label>On-time %</label><input type="number" id="ot" value="70" min="1" max="99"></div>
+          <div><label>Average delay (min)</label><input type="number" id="mn" value="15" min="1"></div>
+          <div><label>Worst delay seen (min)</label><input type="number" id="wc" value="120" min="20"></div>
+        </div>
+        <p class="hint">Find these on FlightAware, Flightera, Airportia, or Google Flights: the share of flights leaving within about 15 minutes, the average delay across all flights, and the worst delay listed.</p>
+        <p class="hint" id="lstatus" style="display:none"></p>
+      </div>
+
+      <div id="presetBox" style="display:none">
+        <div class="chips" id="chips"></div>
+        <p class="hint">Typical departure profiles, learned from 336,776 real flights.</p>
+      </div>
+
+      <div class="result-name" id="rname">Your flight</div>
+      <div class="hero-num" id="heroNum">3<small> min typical delay</small></div>
+
+      <div class="statline" id="statline"></div>
+
+      <div class="viewrow">
+        <div class="legend" id="legendRow">
+          <span><i class="sw" style="background:var(--soft)"></i>On time (15 min or less)</span>
+          <span><i class="sw" style="background:var(--series)"></i>Delayed</span>
+          <span><i class="sw" style="background:var(--crit)"></i>Median</span>
+        </div>
+        <div class="seg mini" id="view">
+          <button data-v="hist" class="on">Distribution</button>
+          <button data-v="exceed">Risk curve</button>
+        </div>
+      </div>
+      <svg id="chart" viewBox="0 0 860 300" role="img" aria-label="Delay chart"></svg>
+      <div class="ptab" id="ptab"></div>
+      <p class="tiny" id="mcheck"></p>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="wrap">
+    <h2>Timing is everything.</h2>
+    <p class="sub">The same route is a different product at 7am than at 7pm. Delays pile up through the day as aircraft and crews fall behind, so an early departure is the single most reliable choice you can make.</p>
+    <svg id="hourChart" viewBox="0 0 860 320" role="img" aria-label="Mean delay by hour" style="margin-top:36px"></svg>
+    <p class="tiny">Mean departure delay by scheduled hour, real flights. The afternoon window runs roughly five to seven times the delay of the early morning bank.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap prose">
+    <h2 style="margin-bottom:30px">How it works</h2>
+    <p>Departure delay is not a bell curve. It is a mixture: a large group of flights that leave on time or a little early, plus a long tail of flights that run seriously late. This tool models both parts together.</p>
+    <p>The delayed tail follows a <b>log-normal</b> shape. That was not assumed. Four candidate distributions were fit to real data and compared by <b>AIC</b> and a <b>Kolmogorov-Smirnov</b> test, and log-normal won on both. The fit was then checked on a held-out half of the data, with bootstrap confidence intervals on the percentiles.</p>
+    <p>From the fitted model, a seeded <b>Monte-Carlo simulation</b> runs in your browser to produce the distribution, the percentile spread, and the <b>risk curve</b>: the probability that the delay exceeds any number of minutes. A <b>calibration check</b> under the chart compares the simulated statistics back to your inputs, so you can see the model actually reproduces them.</p>
+    <p>The typical-flight profiles come from <b>336,776 real flights</b>. When you enter your own flight's numbers, the same model is calibrated to match them, so it works for any flight in the world.</p>
+  </div>
+</section>
+
+<div class="foot center">
+  <div class="wrap">
+    Built with Python and JavaScript. Model and full analysis in the project repository.<br>
+    Typical-flight data from the nycflights13 dataset.
+  </div>
+</div>
+
+<script>
+// Live lookup (optional): deploy proxy/worker.js to Cloudflare Workers, then paste
+// the worker URL here, e.g. "https://flightcast-proxy.yourname.workers.dev".
+// Leave empty to keep manual entry only.
+const PROXY_URL = "https://flightcast-proxy..zogaduka2.workers.dev";
+
+const D2 = {"arche": {"early": {"p": 0.2807, "mu": 2.3313, "sigma": 1.4016, "om": -4.326, "osd": 2.818, "mean": 4.2, "ontime": 0.889, "label": "early"}, "midday": {"p": 0.385, "mu": 2.617, "sigma": 1.4052, "om": -4.394, "osd": 2.907, "mean": 9.8, "ontime": 0.812, "label": "midday"}, "afternoon": {"p": 0.5608, "mu": 2.9338, "sigma": 1.3913, "om": -3.878, "osd": 2.811, "mean": 21.8, "ontime": 0.675, "label": "afternoon"}, "evening": {"p": 0.5982, "mu": 3.1879, "sigma": 1.3548, "om": -4.586, "osd": 3.288, "mean": 27.4, "ontime": 0.607, "label": "evening"}, "all": {"p": 0.4482, "mu": 2.8304, "sigma": 1.418, "om": -4.292, "osd": 2.927}}, "hours": [{"h": 5, "mean": 0.6}, {"h": 6, "mean": 3.5}, {"h": 7, "mean": 4.0}, {"h": 8, "mean": 5.5}, {"h": 9, "mean": 5.8}, {"h": 10, "mean": 7.8}, {"h": 11, "mean": 8.0}, {"h": 12, "mean": 11.6}, {"h": 13, "mean": 13.6}, {"h": 14, "mean": 17.4}, {"h": 15, "mean": 20.6}, {"h": 16, "mean": 23.1}, {"h": 17, "mean": 25.3}, {"h": 18, "mean": 25.1}, {"h": 19, "mean": 31.1}, {"h": 20, "mean": 27.5}, {"h": 21, "mean": 26.1}]};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(rng){let u=0,v=0;while(!u)u=rng();while(!v)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function sampleModel(p,N){const rng=mulberry32(12345);const o=new Float64Array(N);
+  for(let i=0;i<N;i++){o[i]=rng()<p.p?Math.exp(p.mu+p.sigma*gauss(rng)):p.om+p.osd*gauss(rng);}return o;}
+function fmt0(v){const r=v.toFixed(0);return r==='-0'?'0':r;}
+function pctl(s,q){const i=(s.length-1)*q,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo);}
+function surv(s,x){let lo=0,hi=s.length;while(lo<hi){const m=(lo+hi)>>1;if(s[m]<=x)lo=m+1;else hi=m;}return (s.length-lo)/s.length;}
+function fromSummary(otRate,mean,worst){const w=Math.min(Math.max(otRate,.01),.99);
+  const otm=2,ots=6;let E=Math.max((mean-w*otm)/(1-w),16);
+  const f=s=>{const mu=Math.log(E)-s*s/2;return Math.exp(mu+2.326*s)-worst;};
+  let lo=.05,hi=1.5,sig=.5;if(f(lo)*f(hi)<0){for(let k=0;k<60;k++){const m=(lo+hi)/2;(f(lo)*f(m)<=0)?hi=m:lo=m;}sig=(lo+hi)/2;}
+  return{p:1-w,mu:Math.log(E)-sig*sig/2,sigma:sig,om:otm,osd:ots};}
+
+const N=30000,$=id=>document.getElementById(id);
+const PRESETS=[["early","Early morning"],["midday","Midday"],["afternoon","Afternoon"],["evening","Evening"]];
+let curPreset="afternoon", view="hist";
+
+$("chips").innerHTML=PRESETS.map(([k,lab])=>{const a=D2.arche[k];
+  return `<button class="chip${k===curPreset?' on':''}" data-k="${k}">${lab}<small>~${a.mean}m avg, ${Math.round(a.ontime*100)}% on time</small></button>`}).join("");
+
+function mode(){return document.querySelector('#mode .on').dataset.m;}
+function params(){return mode()==='preset'?D2.arche[curPreset]:fromSummary((+$('ot').value)/100,+$('mn').value,+$('wc').value);}
+function nameLabel(){if(mode()==='preset')return PRESETS.find(p=>p[0]===curPreset)[1]+' departure';
+  return ($('fnum').value.trim()||'Your flight');}
+
+function render(){
+  const p=params(),D=sampleModel(p,N),s=Array.from(D).sort((a,b)=>a-b);
+  const med=pctl(s,.5),onTime=1-surv(s,15),sh=x=>surv(s,x);
+  $('rname').textContent=nameLabel();
+  $('heroNum').innerHTML=`${fmt0(med)}<small> min typical delay</small>`;
+  $('statline').innerHTML=[
+    [(onTime*100).toFixed(0)+'%','leave on time'],
+    [(sh(30)*100).toFixed(0)+'%','over 30 min late'],
+    [(sh(60)*100).toFixed(0)+'%','over an hour late'],
+    [fmt0(pctl(s,.9))+' min','1-in-10 worst delay'],
+  ].map(x=>`<div class="s"><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join('');
+  const ps=[5,10,25,50,75,90,95,99];
+  $('ptab').innerHTML=ps.map(q=>`<div><div class="k">P${q}</div><div class="v">${fmt0(pctl(s,q/100))}</div></div>`).join('');
+  // calibration check
+  if(mode()==='custom'){
+    const simMean=D.reduce((a,b)=>a+b,0)/N;
+    $('mcheck').textContent=`Calibration check: simulated ${(onTime*100).toFixed(0)}% on time vs your ${$('ot').value}%, mean delay ${simMean.toFixed(1)} min vs your ${$('mn').value} min. Seeded simulation, so results are reproducible.`;
+  }else{
+    $('mcheck').textContent=`Profile fitted directly to real departures in this window. Seeded simulation, so results are reproducible.`;
+  }
+  $('legendRow').style.visibility=view==='hist'?'visible':'hidden';
+  if(view==='hist')drawHist(D,med);else drawExceed(s);
+}
+function drawHist(D,med){
+  const W=860,H=300,mL=40,mR=16,mT=18,mB=40,xMin=-30,xMax=150,step=5;
+  const bins=(xMax-xMin)/step,cnt=new Array(bins).fill(0);
+  for(const v of D){if(v<xMin||v>=xMax)continue;cnt[Math.floor((v-xMin)/step)]++;}
+  const share=cnt.map(c=>c/D.length*100),yMax=Math.max(10,Math.ceil(Math.max(...share)));
+  const tail=D.filter(v=>v>=xMax).length/D.length*100;
+  const px=v=>mL+(v-xMin)/(xMax-xMin)*(W-mL-mR),py=v=>H-mB-(v/yMax)*(H-mT-mB);
+  let s='';
+  for(let y=0;y<=yMax;y+=Math.ceil(yMax/5)){s+=`<line class="gl" x1="${mL}" x2="${W-mR}" y1="${py(y)}" y2="${py(y)}"/><text class="axlbl" x="${mL-6}" y="${py(y)+3.5}" text-anchor="end">${y}%</text>`;}
+  for(let i=0;i<bins;i++){const x0=xMin+i*step,col=(x0+step)<=15?'var(--soft)':'var(--series)';
+    s+=`<rect x="${px(x0)+1}" y="${py(share[i])}" width="${Math.max(px(x0+step)-px(x0)-1.6,.5)}" height="${Math.max(H-mB-py(share[i]),0)}" rx="2.5" fill="${col}"/>`;}
+  [-30,0,30,60,90,120,150].forEach(t=>s+=`<text class="axlbl" x="${px(t)}" y="${H-mB+16}" text-anchor="middle">${t}</text>`);
+  s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-4}" text-anchor="middle">minutes late (negative is early)</text>`;
+  if(tail>0.5)s+=`<text class="axlbl" x="${W-mR}" y="${mT+8}" text-anchor="end">+${tail.toFixed(0)}% beyond 150 min</text>`;
+  s+=`<line x1="${px(med)}" x2="${px(med)}" y1="${mT}" y2="${H-mB}" stroke="var(--crit)" stroke-width="2"/><text x="${px(med)+5}" y="${mT+9}" fill="var(--crit)" font-size="12" font-weight="600">median ${fmt0(med)}m</text>`;
+  $('chart').innerHTML=s;
+}
+function drawExceed(sorted){
+  const W=860,H=300,mL=44,mR=16,mT=18,mB=40,xMax=150;
+  const pts=[];for(let x=0;x<=xMax;x+=2)pts.push([x,surv(sorted,x)*100]);
+  const yMax=Math.max(10,Math.ceil(pts[0][1]/10)*10);
+  const px=v=>mL+v/xMax*(W-mL-mR),py=v=>H-mB-(v/yMax)*(H-mT-mB);
+  let s='';
+  for(let y=0;y<=yMax;y+=Math.ceil(yMax/5)){s+=`<line class="gl" x1="${mL}" x2="${W-mR}" y1="${py(y)}" y2="${py(y)}"/><text class="axlbl" x="${mL-6}" y="${py(y)+3.5}" text-anchor="end">${y}%</text>`;}
+  [0,30,60,90,120,150].forEach(t=>s+=`<text class="axlbl" x="${px(t)}" y="${H-mB+16}" text-anchor="middle">${t}</text>`);
+  const path=pts.map((p,i)=>`${i?'L':'M'}${px(p[0]).toFixed(1)},${py(p[1]).toFixed(1)}`).join(' ');
+  s+=`<path d="${path} L${px(xMax)},${py(0)} L${px(0)},${py(0)} Z" fill="var(--soft)" opacity=".25"/>`;
+  s+=`<path d="${path}" fill="none" stroke="var(--series)" stroke-width="3"/>`;
+  [30,60,90].forEach(x=>{const v=surv(sorted,x)*100;
+    s+=`<circle cx="${px(x)}" cy="${py(v)}" r="4.5" fill="var(--series)"/>`;
+    s+=`<text x="${px(x)+9}" y="${py(v)-9}" fill="var(--ink)" font-size="12.5" font-weight="600">${v.toFixed(0)}% run over ${x}m</text>`;});
+  s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-4}" text-anchor="middle">chance the delay exceeds x minutes</text>`;
+  $('chart').innerHTML=s;
+}
+function drawHourChart(){
+  const W=860,H=320,mL=44,mR=16,mT=18,mB=44,hrs=D2.hours;
+  const xs=hrs.map(d=>d.h),ys=hrs.map(d=>d.mean);
+  const xMin=Math.min(...xs),xMax=Math.max(...xs),yMax=Math.ceil(Math.max(...ys)/5)*5;
+  const px=v=>mL+(v-xMin)/(xMax-xMin)*(W-mL-mR),py=v=>H-mB-(v/yMax)*(H-mT-mB);
+  const lab=h=>{const ap=h<12?'am':'pm';let x=h%12;if(!x)x=12;return x+ap;};
+  let s='';
+  for(let y=0;y<=yMax;y+=Math.ceil(yMax/5)){s+=`<line class="gl" x1="${mL}" x2="${W-mR}" y1="${py(y)}" y2="${py(y)}"/><text class="axlbl" x="${mL-6}" y="${py(y)+3.5}" text-anchor="end">${y}m</text>`;}
+  hrs.forEach(d=>{if(d.h%3===0)s+=`<text class="axlbl" x="${px(d.h)}" y="${H-mB+16}" text-anchor="middle">${lab(d.h)}</text>`;});
+  s+=`<path d="${hrs.map((d,i)=>`${i?'L':'M'}${px(d.h).toFixed(1)},${py(d.mean).toFixed(1)}`).join(' ')}" fill="none" stroke="var(--series)" stroke-width="3"/>`;
+  hrs.forEach(d=>s+=`<circle cx="${px(d.h)}" cy="${py(d.mean)}" r="3.5" fill="var(--series)"/>`);
+  s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-6}" text-anchor="middle">scheduled departure time</text>`;
+  $('hourChart').innerHTML=s;
+}
+$('mode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const pr=b.dataset.m==='preset';$('presetBox').style.display=pr?'':'none';$('customBox').style.display=pr?'none':'';render();});
+$('chips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;
+  curPreset=c.dataset.k;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');render();});
+$('view').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#view button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  view=b.dataset.v;render();});
+['ot','mn','wc','fnum'].forEach(id=>$(id).addEventListener('input',render));
+const lb=$('lookupBtn');
+function lstat(msg,err){const el=$('lstatus');el.style.display='';el.style.color=err?'var(--crit)':'var(--sec)';el.textContent=msg;}
+async function doLookup(){
+  const f=$('fnum').value.trim();
+  if(!f){lstat('Enter a flight number first.',true);return;}
+  lb.disabled=true;lstat('Looking up '+f.toUpperCase()+'...');
+  try{
+    const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),12000);
+    const r=await fetch(PROXY_URL+'?flight='+encodeURIComponent(f.toUpperCase().replace(/\s+/g,'')),{signal:ctl.signal});
+    clearTimeout(tm);
+    const d=await r.json();
+    if(!r.ok||d.error){lstat((d.error||'Lookup failed.')+' You can still enter the numbers manually.',true);}
+    else{
+      $('ot').value=d.onTime;$('mn').value=Math.max(1,d.mean);$('wc').value=d.worst;
+      render();
+      lstat('Loaded '+(d.n?d.n+' recent departures':'recent history')+' for '+d.flight+(d.originIcao?' from '+d.originIcao:'')+' via AeroDataBox. Estimates filled in below, adjust freely.');
+    }
+  }catch(e){lstat('Could not reach the lookup service. You can still enter the numbers manually.',true);}
+  lb.disabled=false;
+}
+if(PROXY_URL){
+  lb.style.display='';
+  lb.addEventListener('click',doLookup);
+  $('fnum').addEventListener('keydown',e=>{if(e.key==='Enter')doLookup();});
+}
+drawHourChart();render();
+</script>
+</body>
+</html>
