@@ -44,8 +44,8 @@ export default {
       return json({ error: "Enter a valid flight number like AZ610." }, 400, cors);
     }
 
-    // 6-hour cache so repeat lookups cost zero API units
-    const cacheKey = new Request("https://cache.flightcast/delays/" + flight);
+    // 6-hour cache so repeat lookups cost zero API units (v2: rich payload)
+    const cacheKey = new Request("https://cache.flightcast/delays/v2/" + flight);
     const cache = caches.default;
     const hit = await cache.match(cacheKey);
     if (hit) {
@@ -111,30 +111,21 @@ export function toMin(s) {
   return (neg ? -1 : 1) * (h * 60 + m + sec / 60);
 }
 
-/**
- * Map AeroDataBox FlightLegDelayContract -> the three Flightcast inputs.
- * Uses the P5..P95 departure-delay percentile curve of the busiest origin:
- *   on-time %  : interpolated percentile where delay crosses 15 min
- *   mean delay : trapezoid integral of the percentile curve + mild tail terms
- *   worst case : linear tail extrapolation beyond P95
- */
-export function summarize(flight, data) {
-  const origins = (data.origins || []).filter(
-    (o) => o && Array.isArray(o.delayPercentiles) && o.delayPercentiles.length >= 3
-  );
-  if (!origins.length) return null;
-  origins.sort((a, b) => (b.numConsideredFlights || 0) - (a.numConsideredFlights || 0));
-  const o = origins[0];
-
-  const pts = o.delayPercentiles
+/** Extract a sorted {p, d} percentile curve from a FlightDelayContract. */
+function curveOf(contract) {
+  if (!contract || !Array.isArray(contract.delayPercentiles)) return null;
+  const pts = contract.delayPercentiles
     .map((x) => ({ p: x.percentile, d: toMin(x.delay) }))
     .filter((x) => Number.isFinite(x.p) && x.d !== null)
+    .map((x) => ({ p: x.p, d: Math.round(x.d * 10) / 10 }))
     .sort((a, b) => a.p - b.p);
-  if (pts.length < 3) return null;
+  return pts.length >= 3 ? pts : null;
+}
 
-  // on-time share (delay <= 15 min)
-  let onTime;
+/** Derive {onTime, mean, worst} calibration inputs from a percentile curve. */
+function deriveInputs(pts) {
   const last = pts[pts.length - 1], first = pts[0];
+  let onTime;
   if (last.d <= 15) onTime = 97;
   else if (first.d > 15) onTime = 3;
   else {
@@ -146,27 +137,74 @@ export function summarize(flight, data) {
       }
     }
   }
-
-  // mean: trapezoid over known percentiles, flat below P-first, heavier tail above P-last
   let mean = 0;
   for (let i = 0; i < pts.length - 1; i++) {
     mean += ((pts[i].d + pts[i + 1].d) / 2) * ((pts[i + 1].p - pts[i].p) / 100);
   }
   mean += first.d * (first.p / 100);
   mean += last.d * 1.15 * ((100 - last.p) / 100);
-
   const p95 = (pts.find((x) => x.p === 95) || last).d;
   const p90 = (pts.find((x) => x.p === 90) || { d: p95 }).d;
   const worst = Math.max(Math.round(p95 + 2 * (p95 - p90)), Math.round(p95) + 15);
-
   return {
-    flight,
     onTime: Math.round(Math.min(97, Math.max(3, onTime))),
     mean: Math.round(mean),
     worst,
+  };
+}
+
+/**
+ * Map AeroDataBox FlightLegDelayContract -> Flightcast dashboard payload.
+ * Departure side (busiest origin): calibration inputs + full percentile curve +
+ * observed delay brackets. Arrival side (busiest destination): percentile curve,
+ * for the departure-vs-arrival recovery view.
+ */
+export function summarize(flight, data) {
+  const origins = (data.origins || [])
+    .map((o) => ({ o, pts: curveOf(o) }))
+    .filter((x) => x.pts);
+  if (!origins.length) return null;
+  origins.sort(
+    (a, b) => (b.o.numConsideredFlights || 0) - (a.o.numConsideredFlights || 0)
+  );
+  const { o, pts } = origins[0];
+  const inputs = deriveInputs(pts);
+
+  const brackets = (o.numFlightsDelayedBrackets || [])
+    .map((b) => ({
+      from: toMin(b.delayedFrom),
+      to: toMin(b.delayedTo),
+      num: Number.isFinite(b.num) ? b.num : null,
+      pct: Number.isFinite(b.percentage) ? Math.round(b.percentage * 10) / 10 : null,
+    }))
+    .filter((b) => b.num !== null || b.pct !== null);
+
+  const dests = (data.destinations || [])
+    .map((d) => ({ d, pts: curveOf(d) }))
+    .filter((x) => x.pts);
+  dests.sort(
+    (a, b) => (b.d.numConsideredFlights || 0) - (a.d.numConsideredFlights || 0)
+  );
+  const arr = dests.length
+    ? {
+        icao: dests[0].d.airportIcao || null,
+        n: dests[0].d.numConsideredFlights || null,
+        medianMin: Math.round(
+          toMin(dests[0].d.medianDelay) ?? dests[0].pts[Math.floor(dests[0].pts.length / 2)].d
+        ),
+        pts: dests[0].pts,
+      }
+    : null;
+
+  return {
+    flight,
+    ...inputs,
     medianMin: Math.round(toMin(o.medianDelay) ?? pts[Math.floor(pts.length / 2)].d),
     n: o.numConsideredFlights || null,
     originIcao: o.airportIcao || null,
+    window: { from: o.fromUtc || null, to: o.toUtc || null },
+    dep: { pts, brackets },
+    arr,
     source: "AeroDataBox",
   };
 }
