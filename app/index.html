@@ -7,13 +7,13 @@
 <style>
 :root{
   --bg:#ffffff; --alt:#f5f5f7; --ink:#1d1d1f; --sec:#6e6e73; --line:#d2d2d7;
-  --blue:#0071e3; --series:#0071e3; --soft:#a8cbf0; --crit:#e0392b;
-  --card:#ffffff;
+  --blue:#0071e3; --series:#0071e3; --soft:#a8cbf0; --crit:#e0392b; --good:#1a8c3a;
+  --teal:#12879c; --card:#ffffff;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#000000; --alt:#101012; --ink:#f5f5f7; --sec:#a1a1a6; --line:#2a2a2c;
-  --blue:#2997ff; --series:#2997ff; --soft:#2a527e; --crit:#ff6157;
-  --card:#151517;
+  --blue:#2997ff; --series:#2997ff; --soft:#2a527e; --crit:#ff6157; --good:#41c76b;
+  --teal:#3fc1d8; --card:#151517;
 }}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -26,7 +26,7 @@ section{padding:100px 0}
 .eyebrow{color:var(--sec);font-size:15px;font-weight:600;letter-spacing:.01em;margin-bottom:14px}
 h1{font-size:clamp(40px,7vw,72px);font-weight:700;line-height:1.05;letter-spacing:-.025em}
 h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.02em}
-.sub{font-size:clamp(19px,2.4vw,24px);color:var(--sec);font-weight:400;margin-top:20px;max-width:640px}
+.sub{font-size:clamp(19px,2.4vw,24px);color:var(--sec);font-weight:400;margin-top:20px;max-width:660px}
 .center{text-align:center}
 .center .sub{margin-left:auto;margin-right:auto}
 .hero{padding:130px 0 90px}
@@ -36,59 +36,67 @@ h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;line-height:1.08;letter-spac
 .link{color:var(--blue);text-decoration:none;font-size:17px;font-weight:500;margin-left:20px}
 .link:hover{text-decoration:underline}
 
-/* tool */
-.tool{background:var(--card);border-radius:28px;padding:40px;margin-top:40px;
-  border:1px solid var(--line)}
+.tool{background:var(--card);border-radius:28px;padding:40px;margin-top:40px;border:1px solid var(--line)}
 @media(max-width:640px){.tool{padding:24px}}
-.seg{display:inline-flex;background:var(--alt);border-radius:980px;padding:4px;gap:2px;margin-bottom:30px}
-.seg button{border:0;background:transparent;color:var(--sec);padding:9px 20px;border-radius:980px;
-  font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s}
-.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-@media (prefers-color-scheme:dark){.seg button.on{background:#3a3a3c}}
-.seg.mini{margin-bottom:0;padding:3px}
-.seg.mini button{padding:6px 14px;font-size:13px}
-.fields{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:18px;align-items:end}
-@media(max-width:720px){.fields{grid-template-columns:1fr 1fr}}
-label{display:block;font-size:13px;color:var(--sec);font-weight:500;margin-bottom:8px}
-input[type=text],input[type=number]{width:100%;padding:12px 14px;border:1px solid var(--line);
-  border-radius:12px;background:var(--bg);color:var(--ink);font-size:16px;font-family:inherit;outline:none}
-input:focus{border-color:var(--blue)}
-.hint{font-size:13px;color:var(--sec);margin-top:16px}
-.chips{display:flex;gap:10px;flex-wrap:wrap}
-.chip{border:1px solid var(--line);background:var(--bg);border-radius:980px;padding:10px 18px;
-  font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .2s}
-.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.chip small{display:block;font-size:11px;font-weight:400;opacity:.7;margin-top:1px}
+.tool h3{font-size:20px;font-weight:650;margin-bottom:4px}
+.cardsub{font-size:14px;color:var(--sec);margin-bottom:20px}
 
-.lookup{border:0;background:var(--blue);color:#fff;border-radius:10px;padding:0 16px;
-  font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .2s}
+.lookrow{display:flex;gap:10px;max-width:520px}
+input[type=text]{flex:1;padding:13px 15px;border:1px solid var(--line);border-radius:12px;
+  background:var(--bg);color:var(--ink);font-size:17px;font-family:inherit;outline:none}
+input[type=text]:focus{border-color:var(--blue)}
+.lookup{border:0;background:var(--blue);color:#fff;border-radius:12px;padding:0 22px;
+  font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .2s}
 .lookup:hover{opacity:.85}
 .lookup:disabled{opacity:.5;cursor:default}
+.hint{font-size:13px;color:var(--sec);margin-top:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.chips .lbl{font-size:13px;color:var(--sec);margin-right:2px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:980px;padding:7px 14px;
+  font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .2s}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
 
-/* results */
-.result-name{font-size:15px;color:var(--sec);font-weight:600;margin:34px 0 6px}
-.hero-num{font-size:clamp(56px,10vw,88px);font-weight:700;letter-spacing:-.03em;line-height:1}
+.result-name{font-size:15px;color:var(--sec);font-weight:600;margin:32px 0 6px}
+.hero-num{font-size:clamp(52px,9vw,80px);font-weight:700;letter-spacing:-.03em;line-height:1}
 .hero-num small{font-size:.32em;font-weight:500;color:var(--sec);letter-spacing:0}
-.statline{display:flex;gap:36px;flex-wrap:wrap;margin:26px 0 8px}
-.statline .s .n{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.statline{display:flex;gap:34px;flex-wrap:wrap;margin:24px 0 6px}
+.statline .s .n{font-size:25px;font-weight:600;font-variant-numeric:tabular-nums}
 .statline .s .l{font-size:13px;color:var(--sec)}
-.viewrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:26px 0 10px}
-.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--sec)}
+.viewrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:24px 0 10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--sec)}
 .legend span{display:inline-flex;align-items:center;gap:7px}
-.sw{width:11px;height:11px;border-radius:3px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.swl{width:16px;height:3px;border-radius:2px;display:inline-block}
+.seg{display:inline-flex;background:var(--alt);border-radius:980px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--sec);padding:6px 14px;border-radius:980px;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+@media (prefers-color-scheme:dark){.seg button.on{background:#3a3a3c}}
 svg{display:block;width:100%;height:auto;overflow:visible}
 .axlbl{fill:var(--sec);font-size:11px;font-variant-numeric:tabular-nums}
 .gl{stroke:var(--line);stroke-width:1;opacity:.6}
-.ptab{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:14px}
-.ptab div{text-align:center}
-.ptab .k{font-size:11px;color:var(--sec);font-weight:500}
-.ptab .v{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.qgrid{display:grid;grid-template-columns:86px repeat(8,1fr);gap:4px;margin-top:16px;font-variant-numeric:tabular-nums}
+.qgrid div{text-align:center;font-size:14px;font-weight:600;padding:3px 0}
+.qgrid .k{font-size:11px;color:var(--sec);font-weight:500}
+.qgrid .rl{text-align:left;font-size:11.5px;color:var(--sec);font-weight:600;align-self:center}
 .tiny{font-size:13px;color:var(--sec);margin-top:12px}
 
-.prose p{font-size:19px;color:var(--sec);margin-bottom:22px;max-width:720px}
+.sliders{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin:6px 0 22px}
+@media(max-width:720px){.sliders{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--sec);font-weight:500;margin-bottom:6px}
+.rv{font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--blue);margin-top:4px}
+.pricegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:720px){.pricegrid{grid-template-columns:repeat(2,1fr)}}
+.ptile{background:var(--alt);border-radius:14px;padding:14px 16px}
+.ptile .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.ptile .l{font-size:12px;color:var(--sec);margin-top:2px}
+.portfolio{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.portfolio b{font-variant-numeric:tabular-nums}
+
+.prose p{font-size:18px;color:var(--sec);margin-bottom:20px;max-width:740px}
 .prose b{color:var(--ink);font-weight:600}
 .foot{padding:50px 0;border-top:1px solid var(--line);color:var(--sec);font-size:13px}
-.foot a{color:var(--sec)}
 </style>
 </head>
 <body>
@@ -96,59 +104,69 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 <section class="hero center">
   <div class="wrap">
     <div class="eyebrow">Flightcast</div>
-    <h1>How late will your<br>flight actually be?</h1>
-    <p class="sub">A single average hides everything that matters. Enter any flight in the world and see the full distribution of what to expect.</p>
-    <a class="cta" href="#tool">Model your flight</a>
-    <a class="link" href="#why">See why timing matters ›</a>
+    <h1>Every flight has a<br>delay distribution.</h1>
+    <p class="sub">Look up any flight. See its real delay behavior from recent departures, a calibrated model of the tail, and what a delay-protection product on it should cost.</p>
+    <a class="cta" href="#tool">Analyze a flight</a>
+    <a class="link" href="#why">Why timing matters ›</a>
   </div>
 </section>
 
 <section class="alt" id="tool">
   <div class="wrap">
-    <h2>Model any flight</h2>
-    <p class="sub">Enter the numbers from any tracker, or start from a typical departure profile learned from real flights.</p>
+    <h2>The dashboard</h2>
+    <p class="sub">Live statistics per flight, a generative model fitted to them, and a pricing layer on top.</p>
 
     <div class="tool">
-      <div class="seg" id="mode">
-        <button data-m="custom" class="on">Enter my flight</button>
-        <button data-m="preset">Start from a typical flight</button>
+      <h3>Look up a flight</h3>
+      <p class="cardsub">Recent departure-delay statistics, fetched live and modeled in your browser.</p>
+      <div class="lookrow">
+        <input type="text" id="fnum" placeholder="Flight number, e.g. AZ610">
+        <button class="lookup" id="lookupBtn">Look up</button>
       </div>
+      <p class="hint" id="lstatus" style="display:none"></p>
+      <div class="chips" id="chips"><span class="lbl">No flight handy? Try a profile:</span></div>
 
-      <div id="customBox">
-        <div class="fields">
-          <div><label>Flight number</label><div style="display:flex;gap:8px"><input type="text" id="fnum" placeholder="e.g. AZ610" value=""><button class="lookup" id="lookupBtn" style="display:none">Look up</button></div></div>
-          <div><label>On-time %</label><input type="number" id="ot" value="70" min="1" max="99"></div>
-          <div><label>Average delay (min)</label><input type="number" id="mn" value="15" min="1"></div>
-          <div><label>Worst delay seen (min)</label><input type="number" id="wc" value="120" min="20"></div>
-        </div>
-        <p class="hint">Find these on FlightAware, Flightera, Airportia, or Google Flights: the share of flights leaving within about 15 minutes, the average delay across all flights, and the worst delay listed.</p>
-        <p class="hint" id="lstatus" style="display:none"></p>
-      </div>
-
-      <div id="presetBox" style="display:none">
-        <div class="chips" id="chips"></div>
-        <p class="hint">Typical departure profiles, learned from 336,776 real flights.</p>
-      </div>
-
-      <div class="result-name" id="rname">Your flight</div>
-      <div class="hero-num" id="heroNum">3<small> min typical delay</small></div>
-
+      <div class="result-name" id="rname"></div>
+      <div class="hero-num" id="heroNum"></div>
       <div class="statline" id="statline"></div>
 
       <div class="viewrow">
-        <div class="legend" id="legendRow">
-          <span><i class="sw" style="background:var(--soft)"></i>On time (15 min or less)</span>
-          <span><i class="sw" style="background:var(--series)"></i>Delayed</span>
-          <span><i class="sw" style="background:var(--crit)"></i>Median</span>
-        </div>
-        <div class="seg mini" id="view">
+        <div class="legend" id="legendRow"></div>
+        <div class="seg" id="view">
           <button data-v="hist" class="on">Distribution</button>
           <button data-v="exceed">Risk curve</button>
         </div>
       </div>
       <svg id="chart" viewBox="0 0 860 300" role="img" aria-label="Delay chart"></svg>
-      <div class="ptab" id="ptab"></div>
+      <div class="qgrid" id="ptab"></div>
       <p class="tiny" id="mcheck"></p>
+    </div>
+
+    <div class="tool" id="recoveryCard" style="display:none">
+      <h3>Departure vs arrival</h3>
+      <p class="cardsub" id="recSub"></p>
+      <svg id="dumbbell" viewBox="0 0 860 230" role="img" aria-label="Departure vs arrival delay percentiles"></svg>
+    </div>
+
+    <div class="tool" id="pricingCard">
+      <h3>Price a delay-protection product</h3>
+      <p class="cardsub">Parametric insurance: the customer is paid a fixed amount automatically when departure delay exceeds a trigger. The model prices it per flight, the way a card issuer or insurer would.</p>
+      <div class="sliders">
+        <div><label>Trigger threshold <span class="rv" id="thrLbl">120 min</span></label>
+          <input type="range" id="thr" min="30" max="180" step="15" value="120"></div>
+        <div><label>Payout <span class="rv" id="payLbl">$100</span></label>
+          <input type="range" id="pay" min="25" max="500" step="25" value="100"></div>
+        <div><label>Target loss ratio <span class="rv" id="lrLbl">70%</span></label>
+          <input type="range" id="lr" min="50" max="90" step="5" value="70"></div>
+      </div>
+      <div class="pricegrid">
+        <div class="ptile"><div class="v" id="pTrig"></div><div class="l">chance the payout triggers</div></div>
+        <div class="ptile"><div class="v" id="pLoss"></div><div class="l">expected loss per policy</div></div>
+        <div class="ptile"><div class="v" id="pPrem"></div><div class="l">fair premium at target loss ratio</div></div>
+        <div class="ptile"><div class="v" id="pMarg"></div><div class="l">gross margin per policy</div></div>
+      </div>
+      <div class="portfolio" id="portfolio"></div>
+      <p class="tiny">Assumes independent policies on this flight profile. Real books correlate on bad-weather days, so a live product would price a correlation loading on top. Arrival-based triggers price lower thanks to en-route recovery.</p>
     </div>
   </div>
 </section>
@@ -158,31 +176,29 @@ svg{display:block;width:100%;height:auto;overflow:visible}
     <h2>Timing is everything.</h2>
     <p class="sub">The same route is a different product at 7am than at 7pm. Delays pile up through the day as aircraft and crews fall behind, so an early departure is the single most reliable choice you can make.</p>
     <svg id="hourChart" viewBox="0 0 860 320" role="img" aria-label="Mean delay by hour" style="margin-top:36px"></svg>
-    <p class="tiny">Mean departure delay by scheduled hour, real flights. The afternoon window runs roughly five to seven times the delay of the early morning bank.</p>
+    <p class="tiny">Mean departure delay by scheduled hour across 336,776 real flights. The afternoon window runs roughly five to seven times the delay of the early morning bank.</p>
   </div>
 </section>
 
 <section class="alt">
   <div class="wrap prose">
     <h2 style="margin-bottom:30px">How it works</h2>
-    <p>Departure delay is not a bell curve. It is a mixture: a large group of flights that leave on time or a little early, plus a long tail of flights that run seriously late. This tool models both parts together.</p>
-    <p>The delayed tail follows a <b>log-normal</b> shape. That was not assumed. Four candidate distributions were fit to real data and compared by <b>AIC</b> and a <b>Kolmogorov-Smirnov</b> test, and log-normal won on both. The fit was then checked on a held-out half of the data, with bootstrap confidence intervals on the percentiles.</p>
-    <p>From the fitted model, a seeded <b>Monte-Carlo simulation</b> runs in your browser to produce the distribution, the percentile spread, and the <b>risk curve</b>: the probability that the delay exceeds any number of minutes. A <b>calibration check</b> under the chart compares the simulated statistics back to your inputs, so you can see the model actually reproduces them.</p>
-    <p>The typical-flight profiles come from <b>336,776 real flights</b>. When you enter your own flight's numbers, the same model is calibrated to match them, so it works for any flight in the world.</p>
+    <p><b>Data.</b> Each lookup fetches the flight's recent departure-delay statistics from AeroDataBox through a key-safe edge proxy: the full P5 to P95 percentile curve, observed delay brackets, sample size, and the arrival-side curve when available.</p>
+    <p><b>Model.</b> Delay is modeled as a mixture: an on-time cluster plus a <b>log-normal</b> late tail. The family was chosen by fitting four candidates to 336,776 real flights and comparing <b>AIC</b> and <b>Kolmogorov-Smirnov</b> statistics, then validating on held-out data. Per flight, the mixture is calibrated to the fetched statistics, and a seeded <b>Monte-Carlo simulation</b> produces the distribution, percentiles, and exceedance probabilities.</p>
+    <p><b>Fit check.</b> When observed percentiles are available, the dashboard reports the maximum gap between the model CDF and the observed curve, a KS-style statistic, so you can see how faithful the model is before trusting the tail it extrapolates.</p>
+    <p><b>Pricing.</b> A parametric delay product pays a fixed amount when delay exceeds a trigger. Expected loss per policy is the trigger probability times the payout; the fair premium is that loss divided by the target loss ratio; and a binomial portfolio simulation turns per-policy risk into season-level expected payouts and a 1-in-20 adverse scenario, the number a risk team would hold capital against.</p>
+    <p><b>Honest limits.</b> Tracker windows are recent and seasonal, so numbers move with the season. Policies on the same flight correlate on disrupted days, which fattens portfolio tails beyond the independence assumption shown here. Both are stated on the dashboard rather than hidden.</p>
   </div>
 </section>
 
 <div class="foot center">
   <div class="wrap">
-    Built with Python and JavaScript. Model and full analysis in the project repository.<br>
-    Typical-flight data from the nycflights13 dataset.
+    Built with Python and JavaScript. Model, notebook, and proxy code in the project repository.<br>
+    Baseline model fitted on the nycflights13 dataset; live statistics via AeroDataBox.
   </div>
 </div>
 
 <script>
-// Live lookup (optional): deploy proxy/worker.js to Cloudflare Workers, then paste
-// the worker URL here, e.g. "https://flightcast-proxy.yourname.workers.dev".
-// Leave empty to keep manual entry only.
 const PROXY_URL = "https://flightcast-proxy.zogaduka2.workers.dev";
 
 const D2 = {"arche": {"early": {"p": 0.2807, "mu": 2.3313, "sigma": 1.4016, "om": -4.326, "osd": 2.818, "mean": 4.2, "ontime": 0.889, "label": "early"}, "midday": {"p": 0.385, "mu": 2.617, "sigma": 1.4052, "om": -4.394, "osd": 2.907, "mean": 9.8, "ontime": 0.812, "label": "midday"}, "afternoon": {"p": 0.5608, "mu": 2.9338, "sigma": 1.3913, "om": -3.878, "osd": 2.811, "mean": 21.8, "ontime": 0.675, "label": "afternoon"}, "evening": {"p": 0.5982, "mu": 3.1879, "sigma": 1.3548, "om": -4.586, "osd": 3.288, "mean": 27.4, "ontime": 0.607, "label": "evening"}, "all": {"p": 0.4482, "mu": 2.8304, "sigma": 1.418, "om": -4.292, "osd": 2.927}}, "hours": [{"h": 5, "mean": 0.6}, {"h": 6, "mean": 3.5}, {"h": 7, "mean": 4.0}, {"h": 8, "mean": 5.5}, {"h": 9, "mean": 5.8}, {"h": 10, "mean": 7.8}, {"h": 11, "mean": 8.0}, {"h": 12, "mean": 11.6}, {"h": 13, "mean": 13.6}, {"h": 14, "mean": 17.4}, {"h": 15, "mean": 20.6}, {"h": 16, "mean": 23.1}, {"h": 17, "mean": 25.3}, {"h": 18, "mean": 25.1}, {"h": 19, "mean": 31.1}, {"h": 20, "mean": 27.5}, {"h": 21, "mean": 26.1}]};
@@ -190,31 +206,36 @@ function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a
 function gauss(rng){let u=0,v=0;while(!u)u=rng();while(!v)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
 function sampleModel(p,N){const rng=mulberry32(12345);const o=new Float64Array(N);
   for(let i=0;i<N;i++){o[i]=rng()<p.p?Math.exp(p.mu+p.sigma*gauss(rng)):p.om+p.osd*gauss(rng);}return o;}
-function fmt0(v){const r=v.toFixed(0);return r==='-0'?'0':r;}
 function pctl(s,q){const i=(s.length-1)*q,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo);}
 function surv(s,x){let lo=0,hi=s.length;while(lo<hi){const m=(lo+hi)>>1;if(s[m]<=x)lo=m+1;else hi=m;}return (s.length-lo)/s.length;}
+function fmt0(v){const r=v.toFixed(0);return r==='-0'?'0':r;}
 function fromSummary(otRate,mean,worst){const w=Math.min(Math.max(otRate,.01),.99);
   const otm=2,ots=6;let E=Math.max((mean-w*otm)/(1-w),16);
   const f=s=>{const mu=Math.log(E)-s*s/2;return Math.exp(mu+2.326*s)-worst;};
   let lo=.05,hi=1.5,sig=.5;if(f(lo)*f(hi)<0){for(let k=0;k<60;k++){const m=(lo+hi)/2;(f(lo)*f(m)<=0)?hi=m:lo=m;}sig=(lo+hi)/2;}
   return{p:1-w,mu:Math.log(E)-sig*sig/2,sigma:sig,om:otm,osd:ots};}
+function qOf(pts,p){const ex=pts.find(x=>x.p===p);if(ex)return ex.d;
+  for(let i=0;i<pts.length-1;i++){if(pts[i].p<=p&&pts[i+1].p>=p){const f=(p-pts[i].p)/(pts[i+1].p-pts[i].p);return pts[i].d+f*(pts[i+1].d-pts[i].d);}}
+  return p<pts[0].p?pts[0].d:pts[pts.length-1].d;}
+function money(v){return v>=100?'$'+Math.round(v).toLocaleString():'$'+v.toFixed(2);}
 
 const N=30000,$=id=>document.getElementById(id);
 const PRESETS=[["early","Early morning"],["midday","Midday"],["afternoon","Afternoon"],["evening","Evening"]];
-let curPreset="afternoon", view="hist";
+let cur={label:"Afternoon departure profile",params:D2.arche.afternoon,emp:null,key:"afternoon"};
+let view="hist",lastSorted=null,lastD=null;
 
-$("chips").innerHTML=PRESETS.map(([k,lab])=>{const a=D2.arche[k];
-  return `<button class="chip${k===curPreset?' on':''}" data-k="${k}">${lab}<small>~${a.mean}m avg, ${Math.round(a.ontime*100)}% on time</small></button>`}).join("");
-
-function mode(){return document.querySelector('#mode .on').dataset.m;}
-function params(){return mode()==='preset'?D2.arche[curPreset]:fromSummary((+$('ot').value)/100,+$('mn').value,+$('wc').value);}
-function nameLabel(){if(mode()==='preset')return PRESETS.find(p=>p[0]===curPreset)[1]+' departure';
-  return ($('fnum').value.trim()||'Your flight');}
+const chipsEl=$("chips");
+PRESETS.forEach(([k,lab])=>{const b=document.createElement('button');b.className='chip'+(k===cur.key?' on':'');
+  b.dataset.k=k;b.textContent=lab;chipsEl.appendChild(b);});
 
 function render(){
-  const p=params(),D=sampleModel(p,N),s=Array.from(D).sort((a,b)=>a-b);
+  const D=sampleModel(cur.params,N),s=Array.from(D).sort((a,b)=>a-b);
+  lastSorted=s;lastD=D;
   const med=pctl(s,.5),onTime=1-surv(s,15),sh=x=>surv(s,x);
-  $('rname').textContent=nameLabel();
+  let nm=cur.label;
+  if(cur.emp){const w=cur.emp.window;const win=(w&&w.from&&w.to)?(', '+w.from.slice(0,10)+' to '+w.to.slice(0,10)):'';
+    nm=cur.emp.flight+(cur.emp.originIcao?' departing '+cur.emp.originIcao:'')+' ('+(cur.emp.n||'?')+' recent departures'+win+')';}
+  $('rname').textContent=nm;
   $('heroNum').innerHTML=`${fmt0(med)}<small> min typical delay</small>`;
   $('statline').innerHTML=[
     [(onTime*100).toFixed(0)+'%','leave on time'],
@@ -222,52 +243,134 @@ function render(){
     [(sh(60)*100).toFixed(0)+'%','over an hour late'],
     [fmt0(pctl(s,.9))+' min','1-in-10 worst delay'],
   ].map(x=>`<div class="s"><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join('');
+
   const ps=[5,10,25,50,75,90,95,99];
-  $('ptab').innerHTML=ps.map(q=>`<div><div class="k">P${q}</div><div class="v">${fmt0(pctl(s,q/100))}</div></div>`).join('');
-  // calibration check
-  if(mode()==='custom'){
-    const simMean=D.reduce((a,b)=>a+b,0)/N;
-    $('mcheck').textContent=`Calibration check: simulated ${(onTime*100).toFixed(0)}% on time vs your ${$('ot').value}%, mean delay ${simMean.toFixed(1)} min vs your ${$('mn').value} min. Seeded simulation, so results are reproducible.`;
-  }else{
-    $('mcheck').textContent=`Profile fitted directly to real departures in this window. Seeded simulation, so results are reproducible.`;
+  let q='<div class="rl"></div>'+ps.map(p=>`<div class="k">P${p}</div>`).join('');
+  q+='<div class="rl">model</div>'+ps.map(p=>`<div>${fmt0(pctl(s,p/100))}</div>`).join('');
+  if(cur.emp&&cur.emp.dep&&cur.emp.dep.pts){
+    q+='<div class="rl">observed</div>'+ps.map(p=>p<=95?`<div>${fmt0(qOf(cur.emp.dep.pts,p))}</div>`:'<div class="k">-</div>').join('');
   }
-  $('legendRow').style.visibility=view==='hist'?'visible':'hidden';
-  if(view==='hist')drawHist(D,med);else drawExceed(s);
+  $('ptab').innerHTML=q;
+
+  if(cur.emp&&cur.emp.dep&&cur.emp.dep.pts){
+    let gap=0;for(const pt of cur.emp.dep.pts){gap=Math.max(gap,Math.abs((1-surv(s,pt.d))-pt.p/100));}
+    $('mcheck').textContent='Fit check: model CDF within '+(gap*100).toFixed(1)+' points of the observed P5 to P95 curve. Seeded Monte-Carlo, so results are reproducible. Tail beyond P95 is model extrapolation.';
+  }else{
+    $('mcheck').textContent='Profile fitted directly to real departures in this window. Seeded Monte-Carlo, so results are reproducible.';
+  }
+
+  // legend + chart
+  const emp=cur.emp&&cur.emp.dep&&cur.emp.dep.brackets&&cur.emp.dep.brackets.length?cur.emp.dep:null;
+  const lg=$('legendRow');
+  if(view==='hist'){
+    lg.style.visibility='visible';
+    lg.innerHTML=emp
+      ?`<span><i class="sw" style="background:var(--series)"></i>Observed departures</span><span><i class="swl" style="background:var(--ink)"></i>Model</span><span><i class="swl" style="background:var(--crit)"></i>Median</span>`
+      :`<span><i class="sw" style="background:var(--soft)"></i>On time (15 min or less)</span><span><i class="sw" style="background:var(--series)"></i>Delayed</span><span><i class="swl" style="background:var(--crit)"></i>Median</span>`;
+    drawDist(D,med,emp);
+  }else{lg.style.visibility='hidden';drawExceed(s);}
+
+  // recovery card
+  if(cur.emp&&cur.emp.arr&&cur.emp.dep&&cur.emp.dep.pts){
+    $('recoveryCard').style.display='';
+    const dm=qOf(cur.emp.dep.pts,50),am=qOf(cur.emp.arr.pts,50);
+    $('recSub').textContent='Median departure delay of '+fmt0(dm)+' min becomes '+fmt0(am)+' min at arrival'+(cur.emp.arr.icao?' into '+cur.emp.arr.icao:'')+', so this flight recovers about '+fmt0(Math.max(0,dm-am))+' minutes en route.';
+    drawDumbbell(cur.emp.dep.pts,cur.emp.arr.pts);
+  }else $('recoveryCard').style.display='none';
+
+  updatePricing();
 }
-function drawHist(D,med){
+
+function drawDist(D,med,emp){
   const W=860,H=300,mL=40,mR=16,mT=18,mB=40,xMin=-30,xMax=150,step=5;
   const bins=(xMax-xMin)/step,cnt=new Array(bins).fill(0);
   for(const v of D){if(v<xMin||v>=xMax)continue;cnt[Math.floor((v-xMin)/step)]++;}
-  const share=cnt.map(c=>c/D.length*100),yMax=Math.max(10,Math.ceil(Math.max(...share)));
-  const tail=D.filter(v=>v>=xMax).length/D.length*100;
+  const model=cnt.map(c=>c/D.length*100);
+  let obs=null;
+  if(emp){obs=[];for(const b of emp.brackets){
+    let f=b.from==null?xMin:Math.max(b.from,xMin),t=b.to==null?xMax:Math.min(b.to,xMax);
+    if(t<=f)continue;const pct=b.pct!=null?b.pct:(cur.emp.n?b.num/cur.emp.n*100:0);
+    obs.push({f,t,h:pct/((t-f)/step)});}}
+  const yMax=Math.max(10,Math.ceil(Math.max(...model,...(obs?obs.map(o=>o.h):[0]))));
   const px=v=>mL+(v-xMin)/(xMax-xMin)*(W-mL-mR),py=v=>H-mB-(v/yMax)*(H-mT-mB);
   let s='';
   for(let y=0;y<=yMax;y+=Math.ceil(yMax/5)){s+=`<line class="gl" x1="${mL}" x2="${W-mR}" y1="${py(y)}" y2="${py(y)}"/><text class="axlbl" x="${mL-6}" y="${py(y)+3.5}" text-anchor="end">${y}%</text>`;}
-  for(let i=0;i<bins;i++){const x0=xMin+i*step,col=(x0+step)<=15?'var(--soft)':'var(--series)';
-    s+=`<rect x="${px(x0)+1}" y="${py(share[i])}" width="${Math.max(px(x0+step)-px(x0)-1.6,.5)}" height="${Math.max(H-mB-py(share[i]),0)}" rx="2.5" fill="${col}"/>`;}
+  if(obs){
+    for(const o of obs){s+=`<rect x="${px(o.f)+1}" y="${py(o.h)}" width="${Math.max(px(o.t)-px(o.f)-2,1)}" height="${Math.max(H-mB-py(o.h),0)}" rx="3" fill="var(--series)" opacity=".55"/>`;}
+    let path='';for(let i=0;i<bins;i++){const x0=px(xMin+i*step),x1=px(xMin+(i+1)*step),y=py(model[i]);
+      path+=(i?`L${x0},${y} `:`M${x0},${y} `)+`L${x1},${y} `;}
+    s+=`<path d="${path}" fill="none" stroke="var(--ink)" stroke-width="2" opacity=".85"/>`;
+  }else{
+    for(let i=0;i<bins;i++){const x0=xMin+i*step,col=(x0+step)<=15?'var(--soft)':'var(--series)';
+      s+=`<rect x="${px(x0)+1}" y="${py(model[i])}" width="${Math.max(px(x0+step)-px(x0)-1.6,.5)}" height="${Math.max(H-mB-py(model[i]),0)}" rx="2.5" fill="${col}"/>`;}
+  }
   [-30,0,30,60,90,120,150].forEach(t=>s+=`<text class="axlbl" x="${px(t)}" y="${H-mB+16}" text-anchor="middle">${t}</text>`);
-  s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-4}" text-anchor="middle">minutes late (negative is early)</text>`;
+  s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-4}" text-anchor="middle">minutes late (negative is early)${obs?' , observed brackets as bars, model as line':''}</text>`;
+  const tail=D.filter(v=>v>=xMax).length/D.length*100;
   if(tail>0.5)s+=`<text class="axlbl" x="${W-mR}" y="${mT+8}" text-anchor="end">+${tail.toFixed(0)}% beyond 150 min</text>`;
   s+=`<line x1="${px(med)}" x2="${px(med)}" y1="${mT}" y2="${H-mB}" stroke="var(--crit)" stroke-width="2"/><text x="${px(med)+5}" y="${mT+9}" fill="var(--crit)" font-size="12" font-weight="600">median ${fmt0(med)}m</text>`;
   $('chart').innerHTML=s;
 }
+
 function drawExceed(sorted){
-  const W=860,H=300,mL=44,mR=16,mT=18,mB=40,xMax=150;
+  const W=860,H=300,mL=44,mR=16,mT=18,mB=40,xMax=180;
   const pts=[];for(let x=0;x<=xMax;x+=2)pts.push([x,surv(sorted,x)*100]);
   const yMax=Math.max(10,Math.ceil(pts[0][1]/10)*10);
   const px=v=>mL+v/xMax*(W-mL-mR),py=v=>H-mB-(v/yMax)*(H-mT-mB);
   let s='';
   for(let y=0;y<=yMax;y+=Math.ceil(yMax/5)){s+=`<line class="gl" x1="${mL}" x2="${W-mR}" y1="${py(y)}" y2="${py(y)}"/><text class="axlbl" x="${mL-6}" y="${py(y)+3.5}" text-anchor="end">${y}%</text>`;}
-  [0,30,60,90,120,150].forEach(t=>s+=`<text class="axlbl" x="${px(t)}" y="${H-mB+16}" text-anchor="middle">${t}</text>`);
+  [0,30,60,90,120,150,180].forEach(t=>s+=`<text class="axlbl" x="${px(t)}" y="${H-mB+16}" text-anchor="middle">${t}</text>`);
   const path=pts.map((p,i)=>`${i?'L':'M'}${px(p[0]).toFixed(1)},${py(p[1]).toFixed(1)}`).join(' ');
   s+=`<path d="${path} L${px(xMax)},${py(0)} L${px(0)},${py(0)} Z" fill="var(--soft)" opacity=".25"/>`;
   s+=`<path d="${path}" fill="none" stroke="var(--series)" stroke-width="3"/>`;
-  [30,60,90].forEach(x=>{const v=surv(sorted,x)*100;
-    s+=`<circle cx="${px(x)}" cy="${py(v)}" r="4.5" fill="var(--series)"/>`;
-    s+=`<text x="${px(x)+9}" y="${py(v)-9}" fill="var(--ink)" font-size="12.5" font-weight="600">${v.toFixed(0)}% run over ${x}m</text>`;});
+  const T=+$('thr').value,pv=surv(sorted,T)*100;
+  s+=`<line x1="${px(T)}" x2="${px(T)}" y1="${mT}" y2="${H-mB}" stroke="var(--crit)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  s+=`<circle cx="${px(T)}" cy="${py(pv)}" r="4.5" fill="var(--crit)"/>`;
+  s+=`<text x="${px(T)+8}" y="${py(pv)-9}" fill="var(--ink)" font-size="12.5" font-weight="600">${pv.toFixed(1)}% exceed the ${T}m trigger</text>`;
+  [30,60,90].filter(x=>x!==T).forEach(x=>{const v=surv(sorted,x)*100;
+    s+=`<circle cx="${px(x)}" cy="${py(v)}" r="3.5" fill="var(--series)"/>`;});
   s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-4}" text-anchor="middle">chance the delay exceeds x minutes</text>`;
   $('chart').innerHTML=s;
 }
+
+function drawDumbbell(dep,arr){
+  const rows=[25,50,75,90].map(p=>({p,d:qOf(dep,p),a:qOf(arr,p)}));
+  const W=860,H=230,mL=64,mR=110,mT=24,mB=36;
+  const vals=rows.flatMap(r=>[r.d,r.a]);
+  const xMin=Math.min(0,Math.floor(Math.min(...vals)/10)*10),xMax=Math.ceil(Math.max(...vals)/10)*10+10;
+  const px=v=>mL+(v-xMin)/(xMax-xMin)*(W-mL-mR);
+  const rowY=i=>mT+18+(i*(H-mT-mB-18)/(rows.length-1||1));
+  let s='';
+  const stepX=(xMax-xMin)>120?30:15;
+  for(let x=Math.ceil(xMin/stepX)*stepX;x<=xMax;x+=stepX){s+=`<line class="gl" x1="${px(x)}" x2="${px(x)}" y1="${mT}" y2="${H-mB}"/><text class="axlbl" x="${px(x)}" y="${H-mB+16}" text-anchor="middle">${x}</text>`;}
+  rows.forEach((r,i)=>{const y=rowY(i);
+    s+=`<text class="axlbl" x="${mL-10}" y="${y+4}" text-anchor="end" font-weight="600">P${r.p}</text>`;
+    s+=`<line x1="${px(r.d)}" x2="${px(r.a)}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="3"/>`;
+    s+=`<circle cx="${px(r.d)}" cy="${y}" r="6" fill="var(--series)"/>`;
+    s+=`<circle cx="${px(r.a)}" cy="${y}" r="6" fill="var(--teal)"/>`;
+    s+=`<text x="${Math.max(px(r.d),px(r.a))+12}" y="${y+4}" fill="var(--sec)" font-size="11.5">${fmt0(r.d)}m &rarr; ${fmt0(r.a)}m</text>`;});
+  s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-2}" text-anchor="middle">minutes late</text>`;
+  s+=`<g font-size="12"><circle cx="${W-96}" cy="${mT}" r="5" fill="var(--series)"/><text x="${W-86}" y="${mT+4}" fill="var(--sec)">Departure</text>`+
+     `<circle cx="${W-96}" cy="${mT+20}" r="5" fill="var(--teal)"/><text x="${W-86}" y="${mT+24}" fill="var(--sec)">Arrival</text></g>`;
+  $('dumbbell').innerHTML=s;
+}
+
+function updatePricing(){
+  if(!lastSorted)return;
+  const T=+$('thr').value,pay=+$('pay').value,lr=+$('lr').value/100;
+  const p=surv(lastSorted,T);
+  const E=p*pay,prem=lr>0?E/lr:0,marg=prem-E;
+  $('pTrig').textContent=(p*100).toFixed(1)+'%';
+  $('pLoss').textContent=money(E);
+  $('pPrem').textContent=money(prem);
+  $('pMarg').textContent=money(marg);
+  const Np=1000,mu=Np*p,sd=Math.sqrt(Np*p*(1-p));
+  const expTot=mu*pay,p95=(mu+1.645*sd)*pay,buf=p95-expTot;
+  $('portfolio').innerHTML='Across <b>1,000 policies</b> on this flight profile: expected season payouts <b>'+money(expTot)+
+    '</b>, a 1-in-20 adverse season pays <b>'+money(p95)+'</b>, so the book needs a capital buffer of about <b>'+money(buf)+
+    '</b> beyond premiums collected ('+money(prem*1000)+' at this price).';
+}
+
 function drawHourChart(){
   const W=860,H=320,mL=44,mR=16,mT=18,mB=44,hrs=D2.hours;
   const xs=hrs.map(d=>d.h),ys=hrs.map(d=>d.mean);
@@ -282,15 +385,7 @@ function drawHourChart(){
   s+=`<text class="axlbl" x="${(mL+W-mR)/2}" y="${H-6}" text-anchor="middle">scheduled departure time</text>`;
   $('hourChart').innerHTML=s;
 }
-$('mode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-  const pr=b.dataset.m==='preset';$('presetBox').style.display=pr?'':'none';$('customBox').style.display=pr?'none':'';render();});
-$('chips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;
-  curPreset=c.dataset.k;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');render();});
-$('view').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  document.querySelectorAll('#view button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-  view=b.dataset.v;render();});
-['ot','mn','wc','fnum'].forEach(id=>$(id).addEventListener('input',render));
+
 const lb=$('lookupBtn');
 function lstat(msg,err){const el=$('lstatus');el.style.display='';el.style.color=err?'var(--crit)':'var(--sec)';el.textContent=msg;}
 async function doLookup(){
@@ -302,20 +397,32 @@ async function doLookup(){
     const r=await fetch(PROXY_URL+'?flight='+encodeURIComponent(f.toUpperCase().replace(/\s+/g,'')),{signal:ctl.signal});
     clearTimeout(tm);
     const d=await r.json();
-    if(!r.ok||d.error){lstat((d.error||'Lookup failed.')+' You can still enter the numbers manually.',true);}
+    if(!r.ok||d.error){lstat((d.error||'Lookup failed.')+' Try another flight, or explore a profile below.',true);}
     else{
-      $('ot').value=d.onTime;$('mn').value=Math.max(1,d.mean);$('wc').value=d.worst;
+      cur={label:d.flight,params:fromSummary(d.onTime/100,Math.max(1,d.mean),d.worst),
+           emp:(d.dep&&d.dep.pts)?d:null,key:null};
+      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
       render();
-      lstat('Loaded '+(d.n?d.n+' recent departures':'recent history')+' for '+d.flight+(d.originIcao?' from '+d.originIcao:'')+' via AeroDataBox. Estimates filled in below, adjust freely.');
+      lstat('Live data loaded for '+d.flight+' via AeroDataBox.');
     }
-  }catch(e){lstat('Could not reach the lookup service. You can still enter the numbers manually.',true);}
+  }catch(e){lstat('Could not reach the lookup service. Explore a profile below instead.',true);}
   lb.disabled=false;
 }
-if(PROXY_URL){
-  lb.style.display='';
-  lb.addEventListener('click',doLookup);
-  $('fnum').addEventListener('keydown',e=>{if(e.key==='Enter')doLookup();});
-}
+if(PROXY_URL){lb.addEventListener('click',doLookup);
+  $('fnum').addEventListener('keydown',e=>{if(e.key==='Enter')doLookup();});}
+else{lb.style.display='none';$('fnum').placeholder='Lookup not configured; use the profiles below';}
+
+chipsEl.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;
+  cur={label:PRESETS.find(p=>p[0]===c.dataset.k)[1]+' departure profile',params:D2.arche[c.dataset.k],emp:null,key:c.dataset.k};
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+  $('lstatus').style.display='none';render();});
+$('view').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#view button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  view=b.dataset.v;render();});
+$('thr').addEventListener('input',e=>{$('thrLbl').textContent=e.target.value+' min';updatePricing();if(view==='exceed')drawExceed(lastSorted);});
+$('pay').addEventListener('input',e=>{$('payLbl').textContent='$'+e.target.value;updatePricing();});
+$('lr').addEventListener('input',e=>{$('lrLbl').textContent=e.target.value+'%';updatePricing();});
+
 drawHourChart();render();
 </script>
 </body>
